@@ -1,9 +1,10 @@
+import re
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login, logout, authenticate
-
+from .forms import TaskForm
 
 def home(request):
     return render(request, "home.html")
@@ -40,6 +41,17 @@ def signup(request):
 def tasks(request):
     return render(request, "tasks.html")
 
+def create_task(request):
+
+    if request.method=="GET":
+        return render(request, "create_task.html", {
+            "form":TaskForm
+        })
+    else:
+        print(request,"POST")
+        return render(request, "create_task.html", {
+            "form":TaskForm
+        })
 
 def signout(request):
     logout(request)
@@ -62,5 +74,7 @@ def signin(request):
         else:
             login(request, user)
             return redirect("tasks")
+
+
             
 
