@@ -1,4 +1,3 @@
-import re
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
@@ -48,9 +47,16 @@ def create_task(request):
             "form":TaskForm
         })
     else:
-        print(request,"POST")
-        return render(request, "create_task.html", {
-            "form":TaskForm
+        try:
+            form=TaskForm(request.POST)
+            new_task=form.save(commit=False)
+            new_task.user=request.user
+            new_task.save()
+            return redirect("tasks")
+        except ValueError:
+            return render(request, "create_task.html", {
+            "form":TaskForm,
+            "error":"Please, provide valid data."
         })
 
 def signout(request):
