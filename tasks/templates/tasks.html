@@ -1,23 +1,20 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <h1>Tasks</h1>
 
-<ul>    
-    {% for task in tasks  %}
+<ul>
+    {% for task in tasks %}
 
     <li>
-        {% if task.important %}
-        <strong>{{task.title}}</strong>
-        {% else %}
-            {{task.title}}
-        {% endif %}
-        <p>{{task.description}}</p>
-        <p>{{task.user.username}}</p>
-        
+        <a href="{% url "task_detail" task.id %}">
+            {% if task.important %}
+            <strong>{{task.title}}</strong>
+            {% else %} {{task.title}} {% endif %}.
+            <p>{{task.description}}</p>
+            <p>{{task.user.username}}</p>
+        </a>
     </li>
 
     {% endfor %}
-</ul>    
+</ul>
 
 {% endblock %}
