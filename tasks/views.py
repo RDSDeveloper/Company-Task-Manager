@@ -1,3 +1,4 @@
+from time import timezone
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
@@ -5,6 +6,7 @@ from django.db import IntegrityError
 from django.contrib.auth import login, logout, authenticate
 from .forms import TaskForm
 from .models import Task
+from django.utils import timezone
 
 
 def home(request):
@@ -79,7 +81,18 @@ def task_detail(request, task_id):
         except ValueError:
             return render(request, "task_detail.html", {"task": task, "form": form, "error":"Error updating task"})
 
+def complete_task(request, task_id):
+        task = get_object_or_404(Task, pk=task_id, user=request.user)
+        if request.method=="POST":
+            task.datecompleted= timezone.now()
+            task.save()
+            return redirect("tasks")
 
+def delete_task(request, task_id):
+        task = get_object_or_404(Task, pk=task_id, user=request.user)
+        if request.method=="POST":
+            task.delete()
+            return redirect("tasks")
 
 def signout(request):
     logout(request)
